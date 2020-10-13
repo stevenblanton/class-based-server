@@ -4,6 +4,7 @@ import traceback
 import os
 import mimetypes
 
+
 class HttpServer():
 
     @staticmethod
@@ -54,8 +55,9 @@ class HttpServer():
 
         Then you would return "/images/sample_1.png"
         """
+        request_path = request.split(" ")
 
-        return "TODO: COMPLETE THIS"  # TODO
+        return request_path[1]
 
 
     @staticmethod
@@ -88,7 +90,9 @@ class HttpServer():
         if path.endswith('/'):
             return b"text/plain"
         else:
-            return b"TODO: FINISH THE REST OF THESE CASES"  # TODO
+            mtype, other = mimetypes.guess_type(path)
+            print(mtype.encode('utf-8'))
+            return mtype.encode('utf-8')
 
     @staticmethod
     def get_content(path):
@@ -123,8 +127,15 @@ class HttpServer():
             # The file `webroot/a_page_that_doesnt_exist.html`) doesn't exist,
             # so this should raise a FileNotFoundError.
         """
+        path_dir = os.path.join((os.path.abspath(os.path.dirname(__file__))), 'webroot')
+        path_dir = os.path.join(path_dir, str(path)[1:])
 
-        return b"Not implemented!"  # TODO: Complete this function.
+        if path.endswith('/'):
+            return [item.encode('utf-8') for item in os.listdir(path_dir)]
+        else:
+            with open(path_dir, mode='rb') as file:
+                path_content = file.read()
+            return path_content
 
     def __init__(self, port):
         self.port = port
@@ -193,8 +204,7 @@ if __name__ == '__main__':
     try:
         port = int(sys.argv[1])
     except IndexError:
-        port = 10000 
+        port = 10000
 
     server = HttpServer(port)
     server.serve()
-
