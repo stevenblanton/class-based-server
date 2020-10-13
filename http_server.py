@@ -129,7 +129,8 @@ class HttpServer():
         """
         path_dir = os.path.join((os.path.abspath(os.path.dirname(__file__))), 'webroot')
         path_dir = os.path.join(path_dir, str(path)[1:])
-
+        if not os.path.exists(path_dir):
+            raise FileNotFoundError
         if path.endswith('/'):
             return [item.encode('utf-8') for item in os.listdir(path_dir)]
         else:
